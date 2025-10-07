@@ -1,0 +1,82 @@
+<% content_for :title, "Customers" %>
+
+<div class="row">
+  <div class="col-12">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1>Customers</h1>
+      <%= link_to "Upload New Email", new_email_path, class: "btn btn-primary" %>
+    </div>
+  </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <%= form_with url: customers_path, method: :get, local: true, class: "row g-3" do |form| %>
+          <div class="col-md-4">
+            <%= form.label :source, "Filter by Source", class: "form-label" %>
+            <%= form.select :source, options_for_select([["All Sources", ""]] + @sources.map { |s| [s, s] }, params[:source]), {}, { class: "form-select" } %>
+          </div>
+          <div class="col-md-4 d-flex align-items-end">
+            <%= form.submit "Filter", class: "btn btn-outline-primary me-2" %>
+            <%= link_to "Clear", customers_path, class: "btn btn-outline-secondary" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">
+          Customers 
+          <span class="badge bg-secondary"><%= @customers.count %> total</span>
+        </h5>
+      </div>
+      <div class="card-body">
+        <% if @customers.any? %>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Product Code</th>
+                  <th>Source</th>
+                  <th>Created</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @customers.each do |customer| %>
+                  <tr>
+                    <td><%= customer.name %></td>
+                    <td><%= customer.email %></td>
+                    <td><%= customer.phone %></td>
+                    <td><span class="badge bg-info"><%= customer.product_code %></span></td>
+                    <td><span class="badge bg-primary"><%= customer.source %></span></td>
+                    <td><%= time_ago_in_words(customer.created_at) %> ago</td>
+                    <td>
+                      <%= link_to "View", customer_path(customer), class: "btn btn-sm btn-outline-primary" %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <div class="text-center py-5">
+            <h5 class="text-muted">No customers found</h5>
+            <p class="text-muted">Upload some email files to start processing customers.</p>
+            <%= link_to "Upload Email", new_email_path, class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

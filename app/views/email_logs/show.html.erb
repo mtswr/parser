@@ -1,0 +1,135 @@
+<% content_for :title, "Email Log: #{@email_log.filename}" %>
+
+<div class="row">
+  <div class="col-12">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1>Email Log Details</h1>
+      <%= link_to "Back to Logs", email_logs_path, class: "btn btn-secondary" %>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Processing Information</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <dl class="row">
+              <dt class="col-sm-4">Filename:</dt>
+              <dd class="col-sm-8"><%= @email_log.filename %></dd>
+              
+              <dt class="col-sm-4">Source:</dt>
+              <dd class="col-sm-8">
+                <span class="badge bg-primary"><%= @email_log.source %></span>
+              </dd>
+              
+              <dt class="col-sm-4">Status:</dt>
+              <dd class="col-sm-8">
+                <span class="badge bg-<%= @email_log.success? ? 'success' : @email_log.failed? ? 'danger' : 'warning' %> fs-6">
+                  <%= @email_log.status.titleize %>
+                </span>
+              </dd>
+            </dl>
+          </div>
+          <div class="col-md-6">
+            <dl class="row">
+              <dt class="col-sm-4">Processed:</dt>
+              <dd class="col-sm-8"><%= @email_log.created_at.strftime("%B %d, %Y at %I:%M %p") %></dd>
+              
+              <dt class="col-sm-4">Customer ID:</dt>
+              <dd class="col-sm-8">
+                <% if @email_log.customer_id.present? %>
+                  <%= link_to "View Customer ##{@email_log.customer_id}", customer_path(@email_log.customer_id), class: "btn btn-sm btn-outline-primary" %>
+                <% else %>
+                  <span class="text-muted">Not created</span>
+                <% end %>
+              </dd>
+            </dl>
+          </div>
+        </div>
+
+        <% if @email_log.failed? && @email_log.error_message.present? %>
+          <div class="mt-4">
+            <h6 class="text-danger">Error Message:</h6>
+            <div class="alert alert-danger">
+              <%= @email_log.error_message %>
+            </div>
+          </div>
+        <% end %>
+
+        <% if @email_log.extracted_data.present? %>
+          <div class="mt-4">
+            <h6>Extracted Data:</h6>
+            <div class="card bg-light">
+              <div class="card-body">
+                <pre class="mb-0"><%= JSON.pretty_generate(JSON.parse(@email_log.extracted_data)) %></pre>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Quick Actions</h5>
+      </div>
+      <div class="card-body">
+        <div class="d-grid gap-2">
+          <% if @email_log.customer_id.present? %>
+            <%= link_to "View Customer", customer_path(@email_log.customer_id), class: "btn btn-outline-primary" %>
+          <% end %>
+          <%= link_to "View All Logs", email_logs_path, class: "btn btn-outline-secondary" %>
+          <%= link_to "Upload New Email", new_email_path, class: "btn btn-outline-success" %>
+        </div>
+      </div>
+    </div>
+
+    <% if @email_log.success? %>
+      <div class="card mt-3">
+        <div class="card-header">
+          <h6 class="card-title mb-0">Processing Summary</h6>
+        </div>
+        <div class="card-body">
+          <div class="text-center">
+            <i class="bi bi-check-circle-fill text-success" style="font-size: 2rem;"></i>
+            <p class="mt-2 mb-0">Email processed successfully!</p>
+            <small class="text-muted">Customer record created</small>
+          </div>
+        </div>
+      </div>
+    <% elsif @email_log.failed? %>
+      <div class="card mt-3">
+        <div class="card-header">
+          <h6 class="card-title mb-0">Processing Summary</h6>
+        </div>
+        <div class="card-body">
+          <div class="text-center">
+            <i class="bi bi-x-circle-fill text-danger" style="font-size: 2rem;"></i>
+            <p class="mt-2 mb-0">Email processing failed</p>
+            <small class="text-muted">Check error message for details</small>
+          </div>
+        </div>
+      </div>
+    <% else %>
+      <div class="card mt-3">
+        <div class="card-header">
+          <h6 class="card-title mb-0">Processing Summary</h6>
+        </div>
+        <div class="card-body">
+          <div class="text-center">
+            <i class="bi bi-clock-fill text-warning" style="font-size: 2rem;"></i>
+            <p class="mt-2 mb-0">Email is being processed</p>
+            <small class="text-muted">Please wait...</small>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

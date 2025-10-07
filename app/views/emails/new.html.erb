@@ -1,0 +1,32 @@
+<% content_for :title, "Upload Email" %>
+
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title mb-0">Upload Email File</h4>
+      </div>
+      <div class="card-body">
+        <%= form_with model: @email, url: emails_path, multipart: true, local: true, class: "needs-validation", novalidate: true do |form| %>
+          <div class="mb-3">
+            <%= form.label :file, "Email File (.eml)", class: "form-label" %>
+            <%= form.file_field :file, class: "form-control", accept: ".eml", required: true %>
+            <div class="form-text">
+              Please select a .eml file to upload. The system will process it in the background.
+            </div>
+            <% if @email.errors[:file].any? %>
+              <div class="invalid-feedback d-block">
+                <%= @email.errors[:file].join(", ") %>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <%= link_to "Cancel", root_path, class: "btn btn-secondary me-md-2" %>
+            <%= form.submit "Upload Email", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
