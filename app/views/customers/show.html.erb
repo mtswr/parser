@@ -1,0 +1,75 @@
+<% content_for :title, "Customer: #{@customer.name}" %>
+
+<div class="row">
+  <div class="col-12">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1>Customer Details</h1>
+      <%= link_to "Back to Customers", customers_path, class: "btn btn-secondary" %>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Customer Information</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <dl class="row">
+              <dt class="col-sm-4">Name:</dt>
+              <dd class="col-sm-8"><%= @customer.name %></dd>
+              
+              <dt class="col-sm-4">Email:</dt>
+              <dd class="col-sm-8">
+                <a href="mailto:<%= @customer.email %>"><%= @customer.email %></a>
+              </dd>
+              
+              <dt class="col-sm-4">Phone:</dt>
+              <dd class="col-sm-8">
+                <a href="tel:<%= @customer.phone %>"><%= @customer.phone %></a>
+              </dd>
+            </dl>
+          </div>
+          <div class="col-md-6">
+            <dl class="row">
+              <dt class="col-sm-4">Product Code:</dt>
+              <dd class="col-sm-8">
+                <span class="badge bg-info fs-6"><%= @customer.product_code %></span>
+              </dd>
+              
+              <dt class="col-sm-4">Source:</dt>
+              <dd class="col-sm-8">
+                <span class="badge bg-primary"><%= @customer.source %></span>
+              </dd>
+              
+              <dt class="col-sm-4">Created:</dt>
+              <dd class="col-sm-8"><%= @customer.created_at.strftime("%B %d, %Y at %I:%M %p") %></dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Quick Actions</h5>
+      </div>
+      <div class="card-body">
+        <div class="d-grid gap-2">
+          <a href="mailto:<%= @customer.email %>" class="btn btn-outline-primary">
+            <i class="bi bi-envelope"></i> Send Email
+          </a>
+          <a href="tel:<%= @customer.phone %>" class="btn btn-outline-success">
+            <i class="bi bi-telephone"></i> Call Customer
+          </a>
+          <%= link_to "View All Customers", customers_path, class: "btn btn-outline-secondary" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,115 @@
+<% content_for :title, "Email Parser Dashboard" %>
+
+<div class="row">
+  <div class="col-12">
+    <h1 class="mb-4">Email Parser Dashboard</h1>
+  </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-md-3">
+    <div class="card text-white bg-primary">
+      <div class="card-body">
+        <h5 class="card-title">Total Customers</h5>
+        <h2 class="card-text"><%= @stats[:total_customers] %></h2>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-white bg-success">
+      <div class="card-body">
+        <h5 class="card-title">Successful Emails</h5>
+        <h2 class="card-text"><%= @stats[:successful_emails] %></h2>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-white bg-danger">
+      <div class="card-body">
+        <h5 class="card-title">Failed Emails</h5>
+        <h2 class="card-text"><%= @stats[:failed_emails] %></h2>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-white bg-warning">
+      <div class="card-body">
+        <h5 class="card-title">Processing</h5>
+        <h2 class="card-text"><%= @stats[:processing_emails] %></h2>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Recent Customers</h5>
+      </div>
+      <div class="card-body">
+        <% if @recent_customers.any? %>
+          <div class="list-group list-group-flush">
+            <% @recent_customers.each do |customer| %>
+              <div class="list-group-item">
+                <div class="d-flex w-100 justify-content-between">
+                  <h6 class="mb-1"><%= customer.name %></h6>
+                  <small><%= time_ago_in_words(customer.created_at) %> ago</small>
+                </div>
+                <p class="mb-1"><%= customer.email %></p>
+                <small>Product: <%= customer.product_code %> | Source: <%= customer.source %></small>
+              </div>
+            <% end %>
+          </div>
+          <div class="mt-3">
+            <%= link_to "View All Customers", customers_path, class: "btn btn-outline-primary" %>
+          </div>
+        <% else %>
+          <p class="text-muted">No customers found.</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Recent Email Logs</h5>
+      </div>
+      <div class="card-body">
+        <% if @recent_logs.any? %>
+          <div class="list-group list-group-flush">
+            <% @recent_logs.each do |log| %>
+              <div class="list-group-item">
+                <div class="d-flex w-100 justify-content-between">
+                  <h6 class="mb-1"><%= log.filename %></h6>
+                  <span class="badge bg-<%= log.success? ? 'success' : log.failed? ? 'danger' : 'warning' %>">
+                    <%= log.status %>
+                  </span>
+                </div>
+                <p class="mb-1">Source: <%= log.source %></p>
+                <small><%= time_ago_in_words(log.created_at) %> ago</small>
+                <% if log.failed? && log.error_message.present? %>
+                  <div class="mt-2">
+                    <small class="text-danger"><%= truncate(log.error_message, length: 100) %></small>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+          <div class="mt-3">
+            <%= link_to "View All Logs", email_logs_path, class: "btn btn-outline-primary" %>
+          </div>
+        <% else %>
+          <p class="text-muted">No email logs found.</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col-12 text-center">
+    <%= link_to "Upload New Email", new_email_path, class: "btn btn-primary btn-lg" %>
+  </div>
+</div>
